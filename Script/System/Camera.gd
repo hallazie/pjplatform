@@ -1,6 +1,7 @@
 class_name MainCamera extends Camera2D
 
-@onready var gm: GameManager = get_node("/root/Game")
+#@onready var gm: GameManager = get_node("/root/Game")
+@export var gm: GameManager = null
 
 @export var zoom_min: float = 0.6
 @export var zoom_max: float = 1.4
@@ -44,7 +45,7 @@ func _lazy_init():
         return
     if gm == null or gm.player == null:
         return
-    gm.player.PLAYER_SHOOT.connect(on_player_shoot)
+    #gm.player.PLAYER_SHOOT.connect(on_player_shoot)
     inited = true
     
 func to_player_mode():
@@ -75,7 +76,7 @@ func direct_move_to(pos: Vector2):
     reset_smoothing()
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
     
     _lazy_init()
     
@@ -93,10 +94,10 @@ func _process(delta: float) -> void:
         ).normalized()
         focus_position += moving_direction * delta * 150
     
-    if gm.slow_mode:
-        position_smoothing_speed = original_smooth_speed / Engine.time_scale
-    else:
-        position_smoothing_speed = original_smooth_speed
+    #if gm.slow_mode:
+        #position_smoothing_speed = original_smooth_speed / Engine.time_scale
+    #else:
+        #position_smoothing_speed = original_smooth_speed
         
     if free_control:
         global_position = focus_position
