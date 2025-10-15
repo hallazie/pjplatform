@@ -1,0 +1,1 @@
+class_name PlayerMovement extends Node2D

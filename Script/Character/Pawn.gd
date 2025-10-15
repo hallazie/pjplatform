@@ -1,0 +1,1 @@
+class_name Pawn extends CharacterBody2D

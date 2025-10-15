@@ -1,0 +1,1 @@
+class_name PlayerWeapon extends Node2D

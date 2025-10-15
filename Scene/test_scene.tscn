@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://beogofu8hqo0"]
+
+[node name="TestScene" type="Node2D"]
+
+[node name="Tilemap" type="Node2D" parent="."]
+
+[node name="Collision" type="Node2D" parent="Tilemap"]
+
+[node name="Wall" type="TileMapLayer" parent="Tilemap/Collision"]
+
+[node name="Ground" type="TileMapLayer" parent="Tilemap/Collision"]
+
+[node name="Steps" type="TileMapLayer" parent="Tilemap/Collision"]

@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyukr5sjpdpoo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uisot"]
+
+[node name="Player" type="CharacterBody2D"]
+
+[node name="MainCollider" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_uisot")
+
+[node name="FSM" type="Node2D" parent="."]
+
+[node name="Sensor" type="Node2D" parent="."]
+
+[node name="EnvDetector" type="Node2D" parent="Sensor"]
+
+[node name="WallLeft" type="RayCast2D" parent="Sensor/EnvDetector"]
+
+[node name="WallRight" type="RayCast2D" parent="Sensor/EnvDetector"]
+
+[node name="Input" type="Node2D" parent="."]
+
+[node name="Movement" type="Node2D" parent="."]
+
+[node name="Animator" type="Node2D" parent="."]
+
+[node name="Weapon" type="Node2D" parent="."]
