@@ -5,6 +5,7 @@ class_name Player extends Pawn
 @onready var input: PlayerInput = $Input
 @onready var movement: PlayerMovement = $Movement
 @onready var animator: PlayerAnimator = $Animator
+@onready var weapon: PlayerWeapon = $Weapon 
 
 var vertical_speed: float = 0
 var horizontal_speed: float = 0
@@ -12,9 +13,32 @@ var gravity: float = 1200
 
 
 func _ready() -> void:
-    sensor.detector_area.body_entered.connect(on_body_entered)
+    _init_component()
+    _init_signals()
+    
+    
+func _init_component():
+    animator.main = self
+    animator._init_signals()
+    
+    state.main = self
+    state._init_signals()
+    
     input.main = self
+    input._init_signals()
+    
+    movement.main = self
+    movement._init_signals()
+    
     sensor.main = self
+    sensor._init_signals()
+    
+    weapon.main = self
+    weapon._init_signals()
+    
+
+func _init_signals():
+    sensor.detector_area.body_entered.connect(on_body_entered)
 
 
 func _process(delta: float) -> void:
@@ -69,6 +93,5 @@ func _physics_process(delta: float) -> void:
 
 
 func on_body_entered(body):
-    print("[player] collide with %s" % [body])
     if vertical_speed > 0:
         vertical_speed = 0
