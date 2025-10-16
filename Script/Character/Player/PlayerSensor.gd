@@ -1,6 +1,6 @@
 class_name PlayerSensor extends Node2D
 
-enum OnWallType{
+enum SensorWallType{
     None,
     Left,
     Right,
@@ -15,8 +15,10 @@ enum OnWallType{
 var main: Player = null
 
 var is_on_ground: bool = true
-var on_wall_type: OnWallType = OnWallType.None
+var is_on_wall_type: SensorWallType = SensorWallType.None
 var mute_wall_cooldown: float = 0
+var is_on_ground_previous: bool = true
+var is_on_wall_type_previous: SensorWallType = SensorWallType.None
 
 
 func _init_signals():
@@ -27,22 +29,22 @@ func update_sensor(delta: float):
     if mute_wall_cooldown > 0:
         mute_wall_cooldown -= delta
     is_on_ground = ground_check()
-    on_wall_type = wall_check()
+    is_on_wall_type = wall_check()
 
 
 func ground_check() -> bool:
     return detector_ground_left.is_colliding() or detector_ground_right.is_colliding()
 
 
-func wall_check() -> OnWallType:
+func wall_check() -> SensorWallType:
     if mute_wall_cooldown > 0:
-        return OnWallType.None
+        return SensorWallType.None
     if detector_wall_left.is_colliding():
-        return OnWallType.Left
+        return SensorWallType.Left
     elif detector_wall_right.is_colliding():
-        return OnWallType.Right
+        return SensorWallType.Right
     else:
-        return OnWallType.None
+        return SensorWallType.None
 
 
 func mute_wall(duration: float):

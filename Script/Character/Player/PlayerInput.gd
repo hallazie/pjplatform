@@ -14,6 +14,7 @@ var input_cache_max: float = 0.2            # 200 ms for all input cache
 
 var ctl_move_hold: bool = false             # pressing
 var ctl_move_start: bool = false            # just press
+var ctl_move_release: bool = false
 var ctl_attack_hold: bool = false
 var ctl_attack_start: bool = false
 var ctl_attack_release: bool = false
@@ -33,6 +34,10 @@ var ctl_dash_strike_start: bool = false
 var ctl_interact: bool = false
 var ctl_detaching: bool = false
 var ctl_move_direction: float = 0
+
+var ctl_is_sprint_long_press: float = false
+
+var sprint_long_press_threshold: float = 0.2
 
 
 func _ready() -> void:
@@ -78,8 +83,10 @@ func update_input(delta):
     ctl_right_start = Input.is_action_just_pressed("MouseRightClick")
     ctl_right_hold = Input.is_action_pressed("MouseRightClick")
 
+    ctl_move_direction = Input.get_action_strength("Right") - Input.get_action_strength("Left")
     ctl_move_start = Input.is_action_just_pressed("Left") or Input.is_action_just_pressed("Right")
     ctl_move_hold = Input.is_action_pressed("Left") or Input.is_action_pressed("Right")
+    ctl_move_release = (Input.is_action_just_released("Left") or Input.is_action_just_released("Right")) and ctl_move_direction == 0
     
     ctl_shift_start = Input.is_action_just_pressed("Shift")
     ctl_shift_hold = Input.is_action_pressed("Shift")
@@ -102,10 +109,12 @@ func update_input(delta):
     ctl_detaching = Input.is_action_just_pressed("F")
     #ctl_shift_hold = Input.is_action_pressed("Shift")
 
-    ctl_move_direction = Input.get_action_strength("Right") - Input.get_action_strength("Left")
+    ctl_is_sprint_long_press = input_press[Enums.InputOption.Shift] > sprint_long_press_threshold
 
     for key in input_cache.keys():
         if input_cache[key] > 0:
             input_cache[key] -= delta
     
-    allow_jump = main.sensor.is_on_ground or main.sensor.on_wall_type != PlayerSensor.OnWallType.None
+    allow_jump = main.sensor.is_on_ground or main.sensor.is_on_wall_type != PlayerSensor.SensorWallType.None
+    
+    

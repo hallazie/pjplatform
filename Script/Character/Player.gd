@@ -1,5 +1,19 @@
 class_name Player extends Pawn
 
+signal START_JUMP
+signal START_WALL_JUMP
+signal START_LAND_GROUND
+signal START_LAND_WALL
+signal START_ROLL
+signal STOP_ROLL
+signal START_RUN
+signal STOP_RUN
+signal START_SPRINT_RUN
+signal STOP_SPRINT_RUN
+signal START_SLIDE_TACKLE   
+signal STOP_SLIDE_TACKLE
+
+
 @onready var state: PlayerFSM = $FSM
 @onready var sensor: PlayerSensor = $Sensor
 @onready var input: PlayerInput = $Input
@@ -7,9 +21,7 @@ class_name Player extends Pawn
 @onready var animator: PlayerAnimator = $Animator
 @onready var weapon: PlayerWeapon = $Weapon 
 
-var vertical_speed: float = 0
-var horizontal_speed: float = 0
-var gravity: float = 1200
+var facing: Enums.Direction = Enums.Direction.Right
 
 
 func _ready() -> void:
@@ -19,15 +31,22 @@ func _ready() -> void:
     
 func _init_component():
     animator.main = self
+    animator.state = state
+    animator.movement = movement
+    animator.sensor = sensor
     animator._init_signals()
     
     state.main = self
+    state.input = input
     state._init_signals()
     
     input.main = self
     input._init_signals()
     
     movement.main = self
+    movement.state = state
+    movement.input = input
+    movement.sensor = sensor
     movement._init_signals()
     
     sensor.main = self
@@ -38,60 +57,50 @@ func _init_component():
     
 
 func _init_signals():
-    sensor.detector_area.body_entered.connect(on_body_entered)
-
+    pass
 
 func _process(delta: float) -> void:
     input.update_input(delta)
     sensor.update_sensor(delta)
+    update_behaviour(delta)
+    state.update_state(delta)
+    movement.update_movement(delta)
+    animator.update_animator(delta)
+    weapon.update_weapon(delta)
+    
+    
+func update_behaviour(delta: float):
     if input.ctl_jump_start and input.allow_jump:
-        vertical_speed = 400
-        sensor.mute_wall(0.2)
-        if sensor.on_wall_type == PlayerSensor.OnWallType.Left and input.ctl_move_direction < 0:
-            horizontal_speed = 400
-        elif sensor.on_wall_type == PlayerSensor.OnWallType.Right and input.ctl_move_direction > 0:
-            horizontal_speed = -400
-    elif sensor.on_wall_type == PlayerSensor.OnWallType.Left and input.ctl_move_direction < 0:
-        vertical_speed = -80
-    elif sensor.on_wall_type == PlayerSensor.OnWallType.Right and input.ctl_move_direction > 0:
-        vertical_speed = -80        
-    velocity = Vector2(input.ctl_move_direction, 0) * 160 - Vector2(0, vertical_speed) + Vector2(horizontal_speed, 0)
-    
-    if sensor.on_wall_type != PlayerSensor.OnWallType.None and not sensor.is_on_ground:
-        animator.upperbody.play("WallSlide")
-    else:
-        if vertical_speed > 0:
-            animator.upperbody.play("JumpUp")
-        elif vertical_speed < 0:
-            animator.upperbody.play("JumpDown")
+        if sensor.is_on_wall_type != PlayerSensor.SensorWallType.None:
+            START_WALL_JUMP.emit()
         else:
-            if velocity != Vector2.ZERO:
-                animator.upperbody.play("Run")
+            START_JUMP.emit()
+    elif sensor.is_on_ground and not sensor.is_on_ground_previous:
+        START_LAND_GROUND.emit()
+    elif sensor.is_on_wall_type != sensor.SensorWallType.None and sensor.is_on_wall_type_previous == sensor.SensorWallType.None:
+        START_LAND_WALL.emit()
+    elif input.ctl_move_direction != 0:
+        if input.ctl_shift_release:
+            if input.input_press[Enums.InputOption.Shift] < input.sprint_long_press_threshold:
+                START_ROLL.emit()
             else:
-                animator.upperbody.play("Idle")
-        
+                STOP_SPRINT_RUN.emit()
+        elif input.ctl_shift_hold:
+            if input.input_press[Enums.InputOption.Shift] - delta < input.sprint_long_press_threshold and input.input_press[Enums.InputOption.Shift] >= input.sprint_long_press_threshold:
+                START_SPRINT_RUN.emit()
+        elif input.ctl_move_start:
+            START_RUN.emit()
+    elif input.ctl_move_release:
+        if input.input_press[Enums.InputOption.Shift] >= input.sprint_long_press_threshold:
+            STOP_SPRINT_RUN.emit()
+        else:
+            STOP_RUN.emit()
     
-    if velocity.x < 0:
-        animator.scale = Vector2(-1, 1)
-    else:
-        animator.scale = Vector2(1, 1)
+    
+func update_post():
+    sensor.is_on_ground_previous = sensor.is_on_ground
+    sensor.is_on_wall_type_previous = sensor.is_on_wall_type
     
     
 func _physics_process(delta: float) -> void:
-    if not sensor.is_on_ground or vertical_speed > 0:
-        vertical_speed -= delta * gravity
-    else:
-        vertical_speed = 0
-    if abs(horizontal_speed) > 0.1:
-        if horizontal_speed > 0:
-            horizontal_speed -= delta * 1200
-        else:
-            horizontal_speed += delta * 1200
-    else:
-        horizontal_speed = 0
     move_and_slide()
-
-
-func on_body_entered(body):
-    if vertical_speed > 0:
-        vertical_speed = 0

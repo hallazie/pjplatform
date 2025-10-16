@@ -16,3 +16,9 @@ enum InputOption
     E,
     F,
 }
+
+enum Direction
+{
+    Left,
+    Right,
+}
