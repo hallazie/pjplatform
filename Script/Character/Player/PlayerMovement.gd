@@ -64,10 +64,15 @@ func update_movement(delta: float):
         move_speed = max_sprint_speed if input.ctl_is_sprint_long_press else max_run_speed
     main.velocity = Vector2(input.ctl_move_direction, 0) * move_speed - Vector2(0, vertical_speed) + Vector2(horizontal_speed, 0)
     
+    #if allow_turn:
+        #if input.ctl_move_direction > 0:
+            #main.facing = Enums.Direction.Left
+        #elif input.ctl_move_direction < 0:
+            #main.facing = Enums.Direction.Right
     if allow_turn:
-        if input.ctl_move_direction > 0:
+        if get_global_mouse_position().x > main.global_position.x:
             main.facing = Enums.Direction.Left
-        elif input.ctl_move_direction < 0:
+        else:
             main.facing = Enums.Direction.Right
 
 func on_env_body_entered(body):

@@ -1,12 +1,14 @@
 class_name PlayerAnimator extends Node2D
 
 @onready var upperbody: AnimatedSprite2D = $Upperbody
+@onready var hands: AnimatedSprite2D = $Hands
 
 
 var main: Player = null
 var state: PlayerFSM = null
 var movement: PlayerMovement = null
 var sensor: PlayerSensor = null
+var weapon: PlayerWeapon = null
 
 var playing_transaction: bool = false
 
@@ -40,9 +42,11 @@ func update_animator(delta: float):
                 
     if main.facing == Enums.Direction.Right:
         scale = Vector2(-1, 1)
+        hands.rotation = weapon.aiming_direction.angle() + PI
     else:
         scale = Vector2(1, 1)
-
+        hands.rotation = weapon.aiming_direction.angle()
+        
 
 func play_transaction(transaction: PlayerFSM.Transaction):
     if transaction == PlayerFSM.Transaction.SprintStart:

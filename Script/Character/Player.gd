@@ -34,6 +34,7 @@ func _init_component():
     animator.state = state
     animator.movement = movement
     animator.sensor = sensor
+    animator.weapon = weapon
     animator._init_signals()
     
     state.main = self
@@ -53,6 +54,7 @@ func _init_component():
     sensor._init_signals()
     
     weapon.main = self
+    weapon.state = state
     weapon._init_signals()
     
 
