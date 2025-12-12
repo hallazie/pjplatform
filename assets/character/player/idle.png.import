@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://by3acil2y3j82"
-path="res://.godot/imported/weapon-basic-fire.png-47f92d7fcd11eb53c9ccddaf1384e9cb.ctex"
+uid="uid://d13cyat31ytew"
+path="res://.godot/imported/idle.png-7c2e5547afa0a4e6cc9ca2c36808217a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprite/Character/Test/weapon-basic-fire.png"
-dest_files=["res://.godot/imported/weapon-basic-fire.png-47f92d7fcd11eb53c9ccddaf1384e9cb.ctex"]
+source_file="res://assets/character/player/idle.png"
+dest_files=["res://.godot/imported/idle.png-7c2e5547afa0a4e6cc9ca2c36808217a.ctex"]
 
 [params]
 

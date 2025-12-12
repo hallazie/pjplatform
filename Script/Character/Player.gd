@@ -19,7 +19,6 @@ signal STOP_SLIDE_TACKLE
 @onready var input: PlayerInput = $Input
 @onready var movement: PlayerMovement = $Movement
 @onready var animator: PlayerAnimator = $Animator
-@onready var weapon: PlayerWeapon = $Weapon 
 
 var facing: Enums.Direction = Enums.Direction.Right
 
@@ -34,7 +33,6 @@ func _init_component():
     animator.state = state
     animator.movement = movement
     animator.sensor = sensor
-    animator.weapon = weapon
     animator._init_signals()
     
     state.main = self
@@ -53,10 +51,6 @@ func _init_component():
     sensor.main = self
     sensor._init_signals()
     
-    weapon.main = self
-    weapon.state = state
-    weapon._init_signals()
-    
 
 func _init_signals():
     pass
@@ -68,8 +62,7 @@ func _process(delta: float) -> void:
     state.update_state(delta)
     movement.update_movement(delta)
     animator.update_animator(delta)
-    weapon.update_weapon(delta)
-    
+    move_and_slide()
     
 func update_behaviour(delta: float):
     if input.ctl_jump_start and input.allow_jump:
@@ -104,5 +97,3 @@ func update_post():
     sensor.is_on_wall_type_previous = sensor.is_on_wall_type
     
     
-func _physics_process(delta: float) -> void:
-    move_and_slide()

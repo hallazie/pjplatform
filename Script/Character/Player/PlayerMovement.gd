@@ -70,9 +70,9 @@ func update_movement(delta: float):
         #elif input.ctl_move_direction < 0:
             #main.facing = Enums.Direction.Right
     if allow_turn:
-        if get_global_mouse_position().x > main.global_position.x:
+        if main.input.ctl_move_direction < 0:
             main.facing = Enums.Direction.Left
-        else:
+        elif main.input.ctl_move_direction > 0:
             main.facing = Enums.Direction.Right
 
 func on_env_body_entered(body):

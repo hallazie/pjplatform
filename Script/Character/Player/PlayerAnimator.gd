@@ -8,7 +8,6 @@ var main: Player = null
 var state: PlayerFSM = null
 var movement: PlayerMovement = null
 var sensor: PlayerSensor = null
-var weapon: PlayerWeapon = null
 
 var playing_transaction: bool = false
 
@@ -42,10 +41,8 @@ func update_animator(delta: float):
                 
     if main.facing == Enums.Direction.Right:
         scale = Vector2(-1, 1)
-        hands.rotation = weapon.aiming_direction.angle() + PI
     else:
         scale = Vector2(1, 1)
-        hands.rotation = weapon.aiming_direction.angle()
         
 
 func play_transaction(transaction: PlayerFSM.Transaction):

@@ -84,5 +84,6 @@ position = Vector2(0, -10)
 collision_mask = 240
 
 [node name="MainCamera" type="Camera2D" parent="."]
+position_smoothing_enabled = true
 script = ExtResource("4_huixf")
 metadata/_custom_type_script = "uid://cp4sfb7ajl7lw"

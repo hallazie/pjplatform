@@ -9,7 +9,7 @@ class_name MainCamera extends Camera2D
 var free_control: bool = false                  # when true, not forcely focus on player
 var zoom_factor: float = 1
 var zoom_target: Vector2 = Vector2.ONE
-var zoom_base: float = 2.5
+var zoom_base: float = 4
 #var zoom_base: float = 2
 #var zoom_base: float = 3
 var curr_offset: Vector2 = Vector2.ZERO
@@ -103,12 +103,8 @@ func _physics_process(delta: float) -> void:
         global_position = focus_position
     else:
         if gm != null and gm.player != null:
-            # OTXO like, no need to press shift
-            if true or not gm.player.focusing:
-                focus_position = get_global_mouse_position() * 0.5 + gm.player.global_position * 0.5
-            else:
-                focus_position = get_global_mouse_position() * 0.5 + gm.player.global_position * 0.5
-            global_position = focus_position
+            focus_position = gm.player.global_position
+            global_position = lerp(global_position, focus_position, 0.1)
         process_shake(delta)
     # =============== lerp zoom ===============
     update_zoom()
